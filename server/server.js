@@ -31,17 +31,11 @@ const app = express();
 app.use(cors())
   .use(cookieParser());
 
-// Ensure that server is up and receiving requests
-// app.get('/api', (req, res) => {
-//   res.send('PORT: ', port);
-// });
 
 // STEP ONE: GET OAUTH CODE
 app.get('/login', function(req, res) {
-  //custom to react router
   let state = generateRandomString(16);
   res.cookie(stateKey, state);
-  console.log('wooo!')
 
   let scope = 'user-read-private user-read-email';
   res.redirect('https://accounts.spotify.com/authorize?' +
@@ -53,18 +47,12 @@ app.get('/login', function(req, res) {
       state: state,
     })
   );
-  console.log('eh???')
 });
 
 app.get('/callback', function(req, res) {
 
   // your application requests refresh and access tokens
   // after checking the state parameter
-  console.log('hmm');
-  console.log(req.query.code);
-  console.log(req.query.state);
-  console.log(req.cookies);
-  console.log('after req');
   var code = req.query.code || null;
   var state = req.query.state || null;
   var storedState = req.cookies ? req.cookies[stateKey] : null;
@@ -88,23 +76,6 @@ app.get('/callback', function(req, res) {
       },
       json: true
     };
-    console.log('before request.post');
-    // fetch(authOptions.url, {
-    //   method: 'post',
-    //   body: JSON.stringify(authOptions.form),
-    //   headers: {
-    //     'Authorization': 'Basic ' + (new Buffer(client_id + ':' + client_secret).toString('base64')),
-    //     'Content-Type': 'application/x-www-form-urlencoded'
-    //   }
-    // })
-    // .then((res) => {
-    //   console.log('inside fetch!');
-    //   console.log(res);
-    //   return res.json();
-    // }).then((json) => {
-    //   console.log('after json-ing');
-    //   console.log(res);
-    // });
     request.post(authOptions, function(error, response, body) {
       if (!error && response.statusCode === 200) {
 
@@ -121,19 +92,17 @@ app.get('/callback', function(req, res) {
         };
 
         // use the access token to access the Spotify Web API
-        request.get(options, function(error, response, body) {
-          console.log(body);
-        });
-        console.log('positive pre');
+        // request.get(options, function(error, response, body) {
+        //   console.log(body);
+        // });
+
         // we can also pass the token to the browser to make requests from there
         res.redirect('http://localhost:3000/auth/' +
           querystring.stringify({
             access_token: access_token,
             refresh_token: refresh_token
           }));
-        console.log('should have redirected');
       } else {
-        console.log('negative response');
         res.redirect('http://localhost:3000/err/' +
           querystring.stringify({
             error: 'invalid_token'

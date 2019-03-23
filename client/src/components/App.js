@@ -9,7 +9,7 @@ class App extends Component {
   render() {
     return (
       <Router>
-        <div className='bg-dark container-fluid vh-100'>
+        <div className='root bg-dark container-fluid'>
           <Switch>
             <Route exact path='/' component={Login}/>
             <Route path='/auth/:tokens' render={({match}) => {
