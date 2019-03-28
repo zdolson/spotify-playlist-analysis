@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import RadarChart from 'react-svg-radar-chart';
+// import RadarChart from 'react-svg-radar-chart';
 
 // import {fetchSongFeatures} from '../store/actions/general';
-import Songs from './Songs';
-// import Radar from './Radar';
+// import Songs from './Songs';
+import Radar from './Radar';
 
 class AnalysesSection extends Component {
   constructor(props) {
@@ -49,77 +49,57 @@ class AnalysesSection extends Component {
 
   render() {
 
-    const captions = {
-      // columns
-      valence: 'Valence',
-      loudness: 'Loudness',
-      tempo: 'Tempo',
-      energy: 'Energy',
-      danceability: 'Danceability',
-      acousticness: 'Acousticness',
-      // key: 'Key'
-    };
+    // const captions = {
+    //   // columns
+    //   valence: 'Valence',
+    //   loudness: 'Loudness',
+    //   tempo: 'Tempo',
+    //   energy: 'Energy',
+    //   danceability: 'Danceability',
+    //   acousticness: 'Acousticness',
+    //   // key: 'Key'
+    // };
 
     console.log(this.props);
-    // {this.props.selectedPlaylist === ''
-    //   ? 'Select a playlist'
-    //   : (this.props.loading === true
-    //     ? 'Loading!'
-    //     : <Songs />)
-    // }
 
-    // if (this.props.loading) {
-    //   console.log(this.props.loading);
-    //   return (
-    //     <div>
-    //       Loading...
-    //     </div>
-    //   )
-    // }
-    // let {playlistAggregate, selectedPlaylist} = this.props;
-    // if (selectedPlaylist !== '' && playlistAggregate){
-    //   // this.updateDataState();
-    //   console.log(!this.props.playlistAggregate[this.props.selectedPlaylist]
-    //     ? this.state.defaultData
-    //     : this.props.playlistAggregate[this.props.selectedPlaylist]);
-    // }
-    // console.log(playlistAggregate);
-    // console.log(selectedPlaylist);
+    // <div className='container-fluid row h-100'>
+    //   <div className='col-4 border border-dark rounded'>
+    //     {
+    //       this.props.selectedPlaylist === ''
+    //         ? 'Select a playlist'
+    //         : <Songs />
+    //     }
+    //   </div>
+    //   <div className='col-8 border border-dark rounded'>
+    //     {
+    //       this.props.loading || !this.props.playlistAggregate
+    //       ? <RadarChart
+    //         captions={captions}
+    //         data={[
+    //           this.state.defaultData
+    //         ]}
+    //         size={440}
+    //         />
+    //       : <RadarChart
+    //         captions={captions}
+    //         data={[
+    //           {
+    //             data:
+    //               !this.props.playlistAggregate[this.props.selectedPlaylist]
+    //                 ? this.state.defaultData.data
+    //                 : this.props.playlistAggregate[this.props.selectedPlaylist],
+    //             meta: {color: 'red'}
+    //           }
+    //         ]}
+    //         size={440}
+    //         />
+    //     }
+    //   </div>
+    // </div>
 
     return (
-      <div className='container-fluid row h-100'>
-        <div className='col-4 border border-dark rounded'>
-          {
-            this.props.selectedPlaylist === ''
-              ? 'Select a playlist'
-              : <Songs />
-          }
-        </div>
-        <div className='col-8 border border-dark rounded'>
-          {
-            this.props.loading || !this.props.playlistAggregate
-            ? <RadarChart
-              captions={captions}
-              data={[
-                this.state.defaultData
-              ]}
-              size={440}
-              />
-            : <RadarChart
-              captions={captions}
-              data={[
-                {
-                  data:
-                    !this.props.playlistAggregate[this.props.selectedPlaylist]
-                      ? this.state.defaultData.data
-                      : this.props.playlistAggregate[this.props.selectedPlaylist],
-                  meta: {color: 'red'}
-                }
-              ]}
-              size={440}
-              />
-          }
-        </div>
+      <div className='analyses-section'>
+        <Radar size='450'/>
       </div>
     )
   }

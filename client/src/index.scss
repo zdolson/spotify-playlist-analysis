@@ -1,0 +1,202 @@
+@mixin playlist-item-width() {
+    @media only screen and (max-width: 600px) {
+        height: 60px;
+    }
+    @media only screen and (max-width: 900px) {
+        height: 160px;
+    }
+}
+
+// @media (min-width: 575.98px){
+//   .playlist-item {
+//     width: 200px !important;
+//   }
+// }
+
+$spotify-green: #1CD760;
+$spotify-text-black: #222325;
+$spotify-text-white: #ffffff;
+$spotify-black: #000000;
+
+
+body {
+  font-family: -apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Oxygen-Sans,Ubuntu,Cantarell,Helvetica Neue,sans-serif;
+}
+
+.root {
+  height: 100vh;
+  min-height: 800px;
+  // max-height: 1200px;
+  background: $spotify-black;
+  color: $spotify-text-white;
+}
+
+.login-section {
+  color: $spotify-text-black;
+}
+
+.home-container {
+  min-height: 600px;
+}
+
+.playlist-list {
+  display: flex !important;
+  justify-content: flex-end !important;
+  flex-direction: row !important;
+  margin-bottom: 0px !important;
+  padding: 5px !important;
+  background-color: $spotify-black;
+  color: $spotify-text-white;
+}
+
+.playlist-item {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1 !important;
+  align-items: center;
+  border: 2px solid $spotify-black;
+}
+
+.playlist-item-expanded {
+  display: flex !important;
+  flex-direction: column !important;
+  flex: 1.5 !important;
+  align-items: center;
+  padding-top: 30px;
+  border: 2px solid $spotify-green;
+  // justify-content: center;
+}
+
+.playlist-image {
+  box-sizing: border-box;
+  border: 1px solid $spotify-black;
+  border-radius: 25px;
+  width: 80%;
+}
+
+.playlist-image:hover {
+  border: 1px solid $spotify-green;
+}
+
+.calculating-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  height: 100vh;
+}
+
+.calculating-body {
+  height: 20vh;
+  width: 40vw;
+  // text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid $spotify-green;
+  z-index: 1002;
+  position: absolute;
+  background-color: $spotify-black;
+}
+
+.calculating-mosaic {
+  display: flex;
+  flex-wrap: wrap;
+  z-index: 1001;
+  animation: 10s slidein;
+}
+
+.calc-image {
+  height: 200px;
+  width: 200px;
+  opacity: 0.5;
+  margin: 10 auto;
+}
+
+.calc-image:nth-child(odd) {
+  margin-top: 20px;
+}
+
+.calc-image:nth-child(even) {
+  margin-bottom: 20px;
+}
+
+@keyframes slidein {
+  from {
+    margin-bottom: 100%;
+  }
+  to {
+    margin-bottom: 0%;
+  }
+}
+
+.analyses-section {
+  display: flex;
+  // align-items: center;
+  justify-content: center;
+  padding-top: 30px;
+}
+
+.radar-chart {
+  height: 100%;
+  display: flex;
+  // align-items: center;
+  justify-content: center;
+  border: 1px solid red;
+}
+
+.radar-scales {
+  // fill-opacity: 0.9;
+  fill: white;
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.polyline {
+  stroke: black;
+  stroke-width: 1px;
+}
+
+.radar-shape {
+  fill: red;
+  fill-opacity: 0.3;
+}
+
+.radar-shape:hover {
+  // fill: red;
+  fill-opacity: 0.7;
+}
+
+.radar-label {
+  font-size: 9pt;
+}
+
+.thick-border {
+  border-width: 2px !important;
+}
+
+.shape {
+  fill-opacity: .3;
+}
+
+.shape:hover {
+  fill-opacity: .65;
+  z-index: 100;
+}
+
+.scale {
+  fill: #FAFAFA;
+  stroke: #999;
+  stroke-width: .2;
+}
+
+.axis {
+  stroke: #555;
+  stroke-width: .2;
+}
+
+.caption {
+  fill: #444;
+  font-weight: 400;
+  text-shadow: 1px 1px 0 #fff;
+}

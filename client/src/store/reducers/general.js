@@ -6,6 +6,7 @@ import {
   ADD_PLAYLIST_SONGS,
   ADD_PLAYLIST_FEATURES,
   ADD_PLAYLIST_AGGREGATE,
+  ADD_RECENTLY_PLAYED,
 } from '../actions/general';
 
 const defaultState = {
@@ -15,7 +16,8 @@ const defaultState = {
   accessToken: '',
   refreshToken: '',
   selectedPlaylist: '',
-  playlistSongs: {}
+  playlistSongs: {},
+  recentlyPlayed: [],
 }
 
 function general (state = defaultState, action) {
@@ -46,6 +48,11 @@ function general (state = defaultState, action) {
         playlistSongs: {
           [action.selectedPlaylist]: [],
         }
+      }
+    case ADD_RECENTLY_PLAYED:
+      return {
+        ...state,
+        recentlyPlayed: action.recentlyPlayed
       }
     case ADD_PLAYLIST_SONGS:
       return {

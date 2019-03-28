@@ -21,7 +21,7 @@ class Login extends Component {
     //   Sign-in with Spotify
     // </button>
     return (
-      <div className='d-flex justify-content-center align-items-center h-75'>
+      <div className='login-section d-flex justify-content-center align-items-center h-75'>
         <div className='thick-border bg-light border border-success border-rounded p-4 w-25'>
           <h2>Spotify Thing</h2>
           <p>

@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.3.1",
+    "d3": "^5.9.2",
     "node-sass": "^4.11.0",
     "query-string": "^6.4.0",
     "react": "^16.8.4",
@@ -13,7 +14,8 @@
     "react-scripts": "2.1.8",
     "react-svg-radar-chart": "^1.1.3",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "svg-radar-chart": "^0.2.2"
   },
   "scripts": {
     "start": "react-scripts start",
