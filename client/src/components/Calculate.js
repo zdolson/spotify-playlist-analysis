@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import {Link} from 'react-router-dom';
 import {connect} from 'react-redux';
 import {
   updateTokens,
@@ -16,11 +17,26 @@ class Calculate extends Component {
   }
 
   render() {
-    console.log(this.props.recentlyPlayed)
+    // for (let {track} of this.props.recentlyPlayed){
+    //   console.log(track.id);
+    // }
+    // console.log(this.props.recentlyPlayed)
     return (
       <div className='calculating-section'>
         <div className='calculating-body'>
-          Calculating...
+          {this.props.loading
+            ? (
+                <p>
+                  Calculating...
+                </p>
+              )
+            : (
+                <div>
+                  <h3>FINISHED!</h3>
+                  <Link to='/home/'>See the results!</Link>
+                </div>
+              )
+          }
         </div>
         <div className='calculating-mosaic'>
           {
@@ -28,7 +44,8 @@ class Calculate extends Component {
               <img
                 className='calc-image'
                 src={images[1].url}
-                key={id}
+                key={`calc-${id}`}
+                alt={`Playlist cover for: ${id}`}
                 />
             ))
           }
@@ -38,6 +55,7 @@ class Calculate extends Component {
   }
 }
 
-export default connect(({general: {recentlyPlayed}}) => ({
+export default connect(({loading, general: {recentlyPlayed}}) => ({
   recentlyPlayed,
+  loading
 }))(Calculate);

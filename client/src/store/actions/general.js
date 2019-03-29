@@ -2,17 +2,8 @@
 export const LOGGED_IN = 'LOGGED_IN';
 export const UPDATE_TOKENS = 'UPDATE_TOKENS';
 export const SELECT_PLAYLIST = 'SELECT_PLAYLIST';
-
-// Potentially remove these action types.
-export const ADD_PLAYLISTS = 'ADD_PLAYLISTS';
-export const ADD_RECENTLY_PLAYED = 'ADD_RECENTLY_PLAYED';
-export const RETRIEVE_SONGS = 'RETRIEVE_SONGS';
-export const ADD_PLAYLIST_SONGS = 'ADD_PLAYLIST_SONGS';
-export const RETRIEVE_FEATURES = 'RETRIEVE_FEATURES';
-export const ADD_PLAYLIST_FEATURES = 'ADD_PLAYLIST_FEATURES';
-export const ADD_PLAYLIST_AGGREGATE = 'ADD_PLAYLIST_AGGREGATE';
-
-
+export const RESET_PLAYLIST = 'RESET_PLAYLIST';
+export const TOGGLE_COMPARE = 'TOGGLE_COMPARE';
 
 // Success states
 export const FETCH_SUCCESS_PLAYLISTS = 'FETCH_SUCCESS_PLAYLISTS';
@@ -35,6 +26,7 @@ export const FETCH_FAILURE_FEATURES = 'FETCH_FAILURE_FEATURES';
 export const FETCH_FAILURE_RECENT = 'FETCH_FAILURE_RECENT';
 export const FAILED_AGGREGATE = 'FAILED_AGGREGATE';
 
+
 export const baseUrl = 'https://api.spotify.com/v1/';
 
 function login(url) {
@@ -46,19 +38,24 @@ function login(url) {
   };
 }
 
-// Potentially remove.
-function playlists(playlists) {
-  return {
-    type: ADD_PLAYLISTS,
-    playlists
-  };
-}
-
 function tokens(accessToken, refreshToken) {
   return {
     type: UPDATE_TOKENS,
     accessToken,
     refreshToken
+  }
+}
+
+export function selectPlaylist(playlistId) {
+  return {
+    type: SELECT_PLAYLIST,
+    selectedPlaylist: playlistId
+  }
+}
+
+export function resetSelectedPlaylist() {
+  return {
+    type: RESET_PLAYLIST
   }
 }
 
@@ -68,7 +65,7 @@ function attemptFetch(where) {
   }
 }
 
-function successFetch(where, whatToStore) {
+function successFetch(where, whatToStore = null) {
   // Will pull different things in reducer from whatToStore depending on type.
   return {
     type: where,
@@ -88,10 +85,11 @@ function attemptAggregate() {
   }
 }
 
-function successAggregate(playlists) {
+function successAggregate(playlists, totalAggregate) {
   return {
     type: SUCCESS_AGGREGATE,
-    playlists
+    playlists,
+    totalAggregate
   }
 }
 
@@ -102,58 +100,9 @@ function failedAggregate(error) {
   }
 }
 
-function recentlyPlayed(recentlyPlayed) {
+export function toggleCompare() {
   return {
-    type: ADD_RECENTLY_PLAYED,
-    recentlyPlayed
-  }
-}
-
-// Potentially remove.
-function retrieveSongs() {
-  return {
-    type: RETRIEVE_SONGS
-  }
-}
-
-// Potentially remove.
-function retrieveFeatures() {
-  return {
-    type: RETRIEVE_FEATURES
-  }
-}
-
-// Potentially remove.
-function addPlaylistSongs(playlistId, songs) {
-  return {
-    type: ADD_PLAYLIST_SONGS,
-    id: playlistId,
-    songs
-  }
-}
-
-// Potentially remove.
-function addPlaylistFeatures(playlistId, features) {
-  return {
-    type: ADD_PLAYLIST_FEATURES,
-    id: playlistId,
-    features
-  }
-}
-
-// Potentially remove.
-function addPlaylistAggregate(playlistId, aggregate) {
-  return {
-    type: ADD_PLAYLIST_AGGREGATE,
-    id: playlistId,
-    aggregate
-  }
-}
-
-export function selectPlaylist(playlistId) {
-  return {
-    type: SELECT_PLAYLIST,
-    selectedPlaylist: playlistId
+    type: TOGGLE_COMPARE
   }
 }
 
@@ -196,8 +145,8 @@ export function fetchRecentlyPlayed(accessToken, callback) {
     })
     .then(result => result.json())
     .then(({items}) => {
-      dispatch(successFetch(FETCH_SUCCESS_RECENT));
-      dispatch(recentlyPlayed(items));
+      dispatch(successFetch(FETCH_SUCCESS_RECENT, items));
+      // dispatch(recentlyPlayed(items));
       callback();
     })
     .catch((error) => {
@@ -205,164 +154,6 @@ export function fetchRecentlyPlayed(accessToken, callback) {
       dispatch(failedFetch(FETCH_FAILURE_RECENT));
       callback();
     })
-  }
-}
-
-// Potentially remove.
-export function fetchPlaylists(accessToken) {
-  return (dispatch) => {
-    let filter = '?fields=items(id,images,name,tracks)';
-    return fetch(`${baseUrl}me/playlists${filter}`, {
-      headers: {
-        'Authorization': 'Bearer ' + accessToken
-      },
-      mode: 'cors'
-    })
-    .then(result => result.json())
-    .then(json => {
-      // console.log(json.items);
-      dispatch(playlists(json.items))
-    });
-  }
-}
-
-// Potentially remove.
-export function fetchSongs(accessToken, playlistId, total) {
-  return async (dispatch) => {
-    dispatch(retrieveSongs());
-    let filter = '?fields=items(added_at,track(name,id,artists))';
-    let offset, query, result, songs, uniqueSongs, ids = {}, features = [], aggregate, limit = '&limit=100', idQuery = '?ids=';
-
-    if (total > 99) {
-      songs = [];
-      offset = 0;
-      while (offset <= total){
-        query = `${filter}&offset=${offset+limit}`;
-        result = await (await fetch(`${baseUrl}playlists/${playlistId}/tracks${query}`, {
-          headers: {
-            'Authorization': 'Bearer ' + accessToken
-          },
-          mode: 'cors'
-        }))
-        result = await result.json();
-        offset += 100;
-        songs = songs.concat(result.items);
-      }
-
-      // create helper function removeDuplicates(array)
-      uniqueSongs = songs.reduce((accumulator, current) => {
-        if (!current.track.id) {
-          total--;
-        }
-        else if (!ids.hasOwnProperty(current.track.id)) {
-          ids[current.track.id] = true;
-          accumulator.push(current);
-        } else {
-          total--;
-        }
-        return accumulator;
-      }, [])
-      dispatch(addPlaylistSongs(playlistId, uniqueSongs));
-    } else {
-      offset = '&offset=0';
-      query = filter+offset+limit;
-      result = await fetch(`${baseUrl}playlists/${playlistId}/tracks${query}`, {
-        headers: {
-          'Authorization': 'Bearer ' + accessToken
-        },
-        mode: 'cors'
-      })
-      result = await result.json();
-      // console.log(result);
-      // ids = {};
-      uniqueSongs = result.items.reduce((accumulator, current) => {
-        // First check if valid song, no idea === not valid.
-        // console.log('current.track.id: ', current.track.id);
-        if (!current.track.id) {
-          total--;
-        }
-        else if (!ids.hasOwnProperty(current.track.id)) {
-          ids[current.track.id] = true;
-          console.log('current: ', current);
-          accumulator.push(current);
-        } else {
-          // We have a duplicate, do nothing and reduce valid total
-          total--;
-        }
-        return accumulator;
-      }, [])
-      // songs = Array.from(new Set(result.items));
-      dispatch(addPlaylistSongs(playlistId, uniqueSongs));
-    }
-    // now for features
-    //reset ids
-    // console.log('total after: ', total);
-    ids = '';
-    // console.log('uniqueSongs: ', uniqueSongs);
-    dispatch(retrieveFeatures());
-    if (total > 100) {
-      offset = 0;
-      while (offset <= total){
-        let currentMax = (total-offset)/100 >= 1 ? 100 : (total%100)
-        for (let index = 0; index < currentMax; index++) {
-          ids += uniqueSongs[index+offset].track.id + (index - offset === 99 ? '' : ',');
-        }
-        result = await (await fetch(`${baseUrl}audio-features${idQuery + ids}`, {
-          headers: {
-            'Authorization': 'Bearer ' + accessToken
-          },
-          mode: 'cors'
-        }))
-        result = await result.json();
-        offset += 100;
-        features = features.concat(result.audio_features);
-        ids = '';
-      }
-      dispatch(addPlaylistFeatures(playlistId, features));
-    } else {
-      uniqueSongs.forEach(({track}, index) => {
-        ids += track.id + (index === 99 ? '' : ',');
-      })
-      offset = '&offset=0';
-      query = filter+offset+limit;
-      result = await fetch(`${baseUrl}audio-features${idQuery + ids}`, {
-        headers: {
-          'Authorization': 'Bearer ' + accessToken
-        },
-        mode: 'cors'
-      })
-      features = await result.json();
-      features = features.audio_features
-      dispatch(addPlaylistFeatures(playlistId, features));
-    }
-    // console.log('features: ', features);
-
-    aggregate = {
-      valence: 0,
-      loudness: 0,
-      tempo: 0,
-      energy: 0,
-      danceability: 0,
-      acousticness: 0,
-      // key: 0
-    }
-
-    for (let feature of features) {
-      // console.log('feature: ', feature);
-      for (let prop in aggregate) {
-        // console.log(prop);
-        aggregate[prop] = aggregate[prop] + feature[prop];
-      }
-    }
-    for (let prop in aggregate) {
-      if (prop === 'loudness')
-        aggregate[prop] = 1 - parseFloat(Math.abs((aggregate[prop] / total)/60).toFixed(3));
-      else if (prop === 'tempo')
-        aggregate[prop] = parseFloat(Math.abs((aggregate[prop] / total)/280).toFixed(3));
-      else aggregate[prop] = parseFloat((aggregate[prop] / total).toFixed(3));
-    }
-    // console.log(aggregate);
-    dispatch(addPlaylistAggregate(playlistId, aggregate));
   }
 }
 
@@ -386,7 +177,7 @@ export function fetchAndCalculateAll(accessToken) {
     .then((response) => response.json())
     .then((json) => {
       dispatch(successFetch(FETCH_SUCCESS_PLAYLISTS));
-      return json.items
+      return json.items;
     })
     .catch((error) => {
       dispatch(failedFetch(FETCH_FAILURE_PLAYLISTS));
@@ -400,7 +191,7 @@ export function fetchAndCalculateAll(accessToken) {
     let fetchPromises = [];
     let ids = '';
     let limit = 100;
-    let songs, offset, query;
+    let offset, query;
 
     filter = '?fields=items(added_at,track(name,id,artists))';
     playlistsObjectArray.map((playlist) => {
@@ -412,7 +203,6 @@ export function fetchAndCalculateAll(accessToken) {
       }
 
       if (playlist.tracks.total > 100) {
-        songs = [];
         offset = 0;
         while (offset <= playlist.tracks.total){
           query = `${filter}&offset=${offset+limit}`;
@@ -536,7 +326,9 @@ export function fetchAndCalculateAll(accessToken) {
     })
     .catch((error) => dispatch(failedFetch(FETCH_FAILURE_FEATURES)))
 
-    let aggregateTemplate = {
+
+    // Aggregation Section
+    const aggregateTemplate = {
       valence: 0,
       loudness: 0,
       tempo: 0,
@@ -547,15 +339,12 @@ export function fetchAndCalculateAll(accessToken) {
     }
     dispatch(attemptAggregate());
     try {
-      for (let playlist in playlists) {
+      for (let playlist in await playlists) {
         let total = playlists[playlist].tracks.ids.length;
-        let aggregate = aggregateTemplate;
-        // console.log(playlist);
+        let aggregate = Object.assign({}, aggregateTemplate);
         for (let songId of playlists[playlist].tracks.ids){
-          // console.log(songId);
           let songFeatures = allSongs[songId].features;
           for (let column in aggregate) {
-            // console.log('adding');
             aggregate[column] = aggregate[column] + songFeatures[column];
           }
         }
@@ -566,15 +355,29 @@ export function fetchAndCalculateAll(accessToken) {
             aggregate[column] = parseFloat(Math.abs((aggregate[column] / total)/280).toFixed(3));
           else aggregate[column] = parseFloat((aggregate[column] / total).toFixed(3));
         }
-        // console.log(aggregate);
         playlists[playlist].aggregatedValues = aggregate;
       }
-      dispatch(successAggregate(playlists));
+
+      let totalAggregate = Object.assign({}, aggregateTemplate);
+      for (let playlist in playlists) {
+        for (let column in totalAggregate) {
+          totalAggregate[column] += playlists[playlist].aggregatedValues[column];
+        }
+      }
+      let numOfPlaylists = Object.keys(playlists).length;
+      totalAggregate = {
+        valence: totalAggregate.valence/numOfPlaylists,
+        loudness: totalAggregate.loudness/numOfPlaylists,
+        tempo: totalAggregate.tempo/numOfPlaylists,
+        energy: totalAggregate.energy/numOfPlaylists,
+        danceability: totalAggregate.danceability/numOfPlaylists,
+        acousticness: totalAggregate.acousticness/numOfPlaylists,
+      }
+      // playlists.totalAggregate = Object.assign({}, totalAggregate);
+      dispatch(successAggregate(playlists, totalAggregate));
     } catch(error) {
       dispatch(failedAggregate(error));
     }
-    // console.log(playlists);
-    // dispatch(successFetch(FETCH_FAILURE_FEATURES))
   }
 }
 

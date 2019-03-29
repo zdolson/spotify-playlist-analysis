@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
 
-import {handleLogin} from '../store/actions/general';
+// import {handleLogin} from '../store/actions/general';
 
 class Login extends Component {
   // handleSubmit = (e) => {

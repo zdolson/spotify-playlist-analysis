@@ -12,6 +12,10 @@
 //     width: 200px !important;
 //   }
 // }
+$theme-black-base: #242e3a;
+$theme-black-light: #62727b;
+$theme-black-dark: #102027;
+
 
 $spotify-green: #1CD760;
 $spotify-text-black: #222325;
@@ -27,7 +31,7 @@ body {
   height: 100vh;
   min-height: 800px;
   // max-height: 1200px;
-  background: $spotify-black;
+  background: $theme-black-dark;
   color: $spotify-text-white;
 }
 
@@ -37,41 +41,74 @@ body {
 
 .home-container {
   min-height: 600px;
+  height: 60vh;
+}
+
+.home-playlists {
+  height: 30vh;
+
+  h4 {
+    padding-left: 30px;
+    border-bottom: 1px solid $spotify-text-white;
+    width: 100vw;
+  }
+}
+
+.home-panel {
+  background-color: $theme-black-base;
+}
+
+.section-label {
+  padding-top: 10px;
+  border-bottom: 2px solid $spotify-green;
+  text-align: center;
+  width: 60%;
 }
 
 .playlist-list {
   display: flex !important;
-  justify-content: flex-end !important;
+  // justify-content: flex-end !important;
   flex-direction: row !important;
   margin-bottom: 0px !important;
   padding: 5px !important;
-  background-color: $spotify-black;
+  background-color: $theme-black-dark;
   color: $spotify-text-white;
+  width: 100%;
+  overflow-x: auto;
 }
 
 .playlist-item {
   display: flex !important;
   flex-direction: column !important;
-  flex: 1 !important;
+  // flex: 1 !important;
   align-items: center;
-  border: 2px solid $spotify-black;
+  border: 2px solid $theme-black-dark;
 }
-
-.playlist-item-expanded {
-  display: flex !important;
-  flex-direction: column !important;
-  flex: 1.5 !important;
-  align-items: center;
-  padding-top: 30px;
-  border: 2px solid $spotify-green;
-  // justify-content: center;
-}
+//
+// .playlist-item-expanded {
+//   display: flex !important;
+//   flex-direction: column !important;
+//   flex: 1.5 !important;
+//   align-items: center;
+//   padding-top: 30px;
+//   border: 2px solid $spotify-green;
+//   // justify-content: center;
+// }
 
 .playlist-image {
   box-sizing: border-box;
-  border: 1px solid $spotify-black;
+  border: 1px solid $theme-black-dark;
   border-radius: 25px;
+  min-width: 200px;
   width: 80%;
+}
+
+.playlist-image-active {
+  box-sizing: border-box;
+  border-radius: 25px;
+  min-width: 200px;
+  width: 80%;
+  border: 1px solid $spotify-green;
 }
 
 .playlist-image:hover {
@@ -96,7 +133,7 @@ body {
   border: 1px solid $spotify-green;
   z-index: 1002;
   position: absolute;
-  background-color: $spotify-black;
+  background-color: $theme-black-dark;
 }
 
 .calculating-mosaic {
@@ -132,9 +169,10 @@ body {
 
 .analyses-section {
   display: flex;
-  // align-items: center;
-  justify-content: center;
-  padding-top: 30px;
+  padding-top: 10px;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
 }
 
 .radar-chart {
@@ -142,33 +180,44 @@ body {
   display: flex;
   // align-items: center;
   justify-content: center;
-  border: 1px solid red;
+  // border: 1px solid red;
 }
 
 .radar-scales {
-  // fill-opacity: 0.9;
-  fill: white;
-  stroke: black;
-  stroke-width: 1px;
+  fill-opacity: 0.1;
+  fill: #CDCDCD;
+  // stroke: white;
+  // stroke-width: 1px;
 }
 
 .polyline {
-  stroke: black;
+  stroke: $spotify-green;
   stroke-width: 1px;
 }
 
-.radar-shape {
-  fill: red;
+.radar-shape-0 {
+  fill: #9c27b0;
   fill-opacity: 0.3;
 }
 
-.radar-shape:hover {
+.radar-shape-1 {
+  fill: #ff8f00;
+  fill-opacity: 0.3;
+}
+
+.radar-shape-0:hover {
+  // fill: red;
+  fill-opacity: 0.7;
+}
+
+.radar-shape-1:hover {
   // fill: red;
   fill-opacity: 0.7;
 }
 
 .radar-label {
   font-size: 9pt;
+  fill: white;
 }
 
 .thick-border {
@@ -184,19 +233,19 @@ body {
   z-index: 100;
 }
 
-.scale {
-  fill: #FAFAFA;
-  stroke: #999;
-  stroke-width: .2;
-}
-
-.axis {
-  stroke: #555;
-  stroke-width: .2;
-}
-
-.caption {
-  fill: #444;
-  font-weight: 400;
-  text-shadow: 1px 1px 0 #fff;
-}
+// .scale {
+//   fill: #FAFAFA;
+//   stroke: #999;
+//   stroke-width: .2;
+// }
+//
+// .axis {
+//   stroke: #555;
+//   stroke-width: .2;
+// }
+//
+// .caption {
+//   fill: #444;
+//   font-weight: 400;
+//   text-shadow: 1px 1px 0 #fff;
+// }

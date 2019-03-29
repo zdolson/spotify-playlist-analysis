@@ -27,40 +27,29 @@ class AnalysesSection extends Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.selectedPlaylist !== this.props.selectedPlaylist){
-      this.setState({
-        data: this.state.defaultData
-      })
-      if (this.props.selectedPlaylist !== '' && this.props.playlistAggregate){
-        this.updateDataState();
-      }
-    }
-  }
-
-  updateDataState = () => {
-    this.setState({
-      data: {
-        data: this.props.playlistAggregate[this.props.selectedPlaylist],
-        meta: {color: 'red'}
-      }
-    });
-  }
+  // componentDidUpdate(prevProps) {
+  //   if (prevProps.selectedPlaylist !== this.props.selectedPlaylist){
+  //     this.setState({
+  //       data: this.state.defaultData
+  //     })
+  //     if (this.props.selectedPlaylist !== '' && this.props.playlistAggregate){
+  //       this.updateDataState();
+  //     }
+  //   }
+  // }
+  //
+  // updateDataState = () => {
+  //   this.setState({
+  //     data: {
+  //       data: this.props.playlistAggregate[this.props.selectedPlaylist],
+  //       meta: {color: 'red'}
+  //     }
+  //   });
+  // }
 
   render() {
 
-    // const captions = {
-    //   // columns
-    //   valence: 'Valence',
-    //   loudness: 'Loudness',
-    //   tempo: 'Tempo',
-    //   energy: 'Energy',
-    //   danceability: 'Danceability',
-    //   acousticness: 'Acousticness',
-    //   // key: 'Key'
-    // };
-
-    console.log(this.props);
+    // console.log(this.props);
 
     // <div className='container-fluid row h-100'>
     //   <div className='col-4 border border-dark rounded'>
@@ -99,16 +88,16 @@ class AnalysesSection extends Component {
 
     return (
       <div className='analyses-section'>
+        <h4>Analyses Graph</h4>
         <Radar size='450'/>
       </div>
     )
   }
 }
 
-export default connect(({loading, general: {selectedPlaylist, accessToken, playlistSongs, playlistAggregate}}) => ({
+export default connect(({loading, general: {selectedPlaylist, accessToken, playlists}}) => ({
   selectedPlaylist,
-  playlistSongs,
   accessToken,
   loading,
-  playlistAggregate,
+  playlists,
 }))(AnalysesSection);

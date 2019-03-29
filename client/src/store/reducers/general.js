@@ -1,23 +1,31 @@
 import {
   LOGGED_IN,
   UPDATE_TOKENS,
-  ADD_PLAYLISTS,
   SELECT_PLAYLIST,
-  ADD_PLAYLIST_SONGS,
-  ADD_PLAYLIST_FEATURES,
-  ADD_PLAYLIST_AGGREGATE,
-  ADD_RECENTLY_PLAYED,
+  RESET_PLAYLIST,
+  FETCH_SUCCESS_PLAYLISTS,
+  FETCH_SUCCESS_SONGS,
+  FETCH_SUCCESS_FEATURES,
+  FETCH_SUCCESS_RECENT,
+  SUCCESS_AGGREGATE,
+  TOGGLE_COMPARE,
+  // FETCH_FAILURE_PLAYLISTS,
+  // FETCH_FAILURE_SONGS,
+  // FETCH_FAILURE_FEATURES,
+  // FETCH_FAILURE_RECENT,
+  // FAILED_AGGREGATE,
 } from '../actions/general';
 
 const defaultState = {
-  playlists: [],
+  playlists: {},
   redirectUrl: '',
   authenticated: false,
   accessToken: '',
   refreshToken: '',
   selectedPlaylist: '',
-  playlistSongs: {},
+  allSongs: {},
   recentlyPlayed: [],
+  compareEnabled: false,
 }
 
 function general (state = defaultState, action) {
@@ -36,56 +44,43 @@ function general (state = defaultState, action) {
         accessToken: action.accessToken,
         refreshToken: action.refreshToken
       }
-    case ADD_PLAYLISTS:
-      return {
-        ...state,
-        playlists: action.playlists
-      }
     case SELECT_PLAYLIST:
       return {
         ...state,
         selectedPlaylist: action.selectedPlaylist,
-        playlistSongs: {
-          [action.selectedPlaylist]: [],
-        }
       }
-    case ADD_RECENTLY_PLAYED:
+    case RESET_PLAYLIST:
       return {
         ...state,
-        recentlyPlayed: action.recentlyPlayed
+        selectedPlaylist: '',
       }
-    case ADD_PLAYLIST_SONGS:
+    case TOGGLE_COMPARE:
       return {
         ...state,
-        playlistSongs: {
-          ...state.playlistSongs,
-          [action.id]: action.songs,
-        }
+        compareEnabled: !state.compareEnabled,
       }
-    case ADD_PLAYLIST_FEATURES:
-    return {
-      ...state,
-      playlistFeatures: {
-        ...state.playlistFeatures,
-        [action.id]: action.features,
+    case FETCH_SUCCESS_PLAYLISTS:
+    case FETCH_SUCCESS_SONGS:
+      // Purely exist in the event I need to do something here.
+      return state;
+    case FETCH_SUCCESS_FEATURES:
+      // This is when we all of the songs are logged and evaluated/prepped
+      return {
+        ...state,
+        allSongs: action.whatToStore
       }
-    }
-    case ADD_PLAYLIST_AGGREGATE:
-    return {
-      ...state,
-      playlistAggregate: {
-        ...state.playlistAggregate,
-        [action.id]: {
-          valence: action.aggregate.valence,
-          loudness: action.aggregate.loudness,
-          tempo: action.aggregate.tempo,
-          energy: action.aggregate.energy,
-          danceability: action.aggregate.danceability,
-          acousticness: action.aggregate.acousticness,
-          key: action.aggregate.key
-        },
+    case SUCCESS_AGGREGATE:
+      // This is when our playlists have also been prepped for the app.
+      return {
+        ...state,
+        playlists: action.playlists,
+        totalAggregate: action.totalAggregate,
       }
-    }
+    case FETCH_SUCCESS_RECENT:
+      return {
+        ...state,
+        recentlyPlayed: action.whatToStore
+      }
     default:
       return state
   }
