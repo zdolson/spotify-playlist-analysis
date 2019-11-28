@@ -2,11 +2,15 @@ This project's goal is display aggregated song data from a Spotify account's pla
 
 **Tech Stack:**
 - React.js
-- Redux (and React-Redux)
-- Router
-- Bootstrap
-- Express.js
+- Redux **(Soon to be replaced with React Hooks & Context)**
+- Router **(Soon to be transitioning to Gatsby's Router (reach/router))**
+- Bootstrap **(Eventual replacement with more custom coding)**
+- Express.js **(May pivot to Boa.ja)**
+- __To be added: Gatsby.js__
 - Spotify API
+
+- Node v12.13.1
+- NPM v6.13.1
 
 ---
 
