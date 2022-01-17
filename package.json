@@ -11,7 +11,7 @@
   "author": "Zack Olson",
   "license": "ISC",
   "dependencies": {
-    "concurrently": "^4.1.0",
+    "concurrently": "^6.0.0",
     "cookie-parser": "^1.4.4",
     "cors": "^2.8.5",
     "dotenv": "^7.0.0",
